@@ -32,5 +32,7 @@ This repository includes solutions to the following problem sets:
    git clone https://github.com/Fatyhich/sk_perception
    cd sk_perception
 
+Have fun and good luck!
+
 ### Contact
 1. e-Mail: [D.Fatykhoph@skoltech.ru](mailto:D.Fatykhoph@skoltech.ru)
