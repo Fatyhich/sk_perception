@@ -1,0 +1,66 @@
+FROM ubuntu:22.04
+
+ARG UID
+ARG GID
+
+# here I defined same UID/GID as in my system (`id` from bash to check)
+RUN addgroup --gid ${GID} --system oversir \
+ && adduser  --uid ${UID} --system \
+            --ingroup oversir \
+            --home /home/oversir \
+            --shell /bin/bash oversir
+
+RUN chown -R oversir:oversir /home/oversir
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN ln -snf /usr/share/zoneinfo/Etc/UTC /etc/localtime && echo "Etc/UTC" > /etc/timezone
+
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get update && \
+    DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    sudo \
+    nano \
+    python3 \
+    python3-pip \
+    git \
+    ffmpeg \
+    python3-tk \
+    qtbase5-dev \
+    python3-pyqt5 \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    && rm -rf /var/lib/apt/lists/*
+
+# Добавьте переменные окружения для XDG
+ENV XDG_RUNTIME_DIR=/tmp/runtime-oversir
+ENV QT_X11_NO_MITSHM=1
+
+# Создайте директорию для XDG_RUNTIME_DIR
+RUN mkdir -p /tmp/runtime-oversir && \
+    chmod 700 /tmp/runtime-oversir && \
+    chown oversir:oversir /tmp/runtime-oversir
+
+# done in composer
+ENV DISPLAY=:0
+ENV XAUTHORITY=/tmp/.Xauthority
+
+RUN usermod -aG sudo oversir
+RUN echo 'oversir ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Copy requirements file
+COPY requirements.txt /tmp/requirements.txt
+
+# Install Python packages and requirements
+RUN pip3 install --no-cache-dir \
+    numpy==1.26 \
+    pandas==2.2.0 \
+    matplotlib \
+    && pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+USER oversir
+WORKDIR /home/oversir
+
+CMD ["/bin/bash"]
