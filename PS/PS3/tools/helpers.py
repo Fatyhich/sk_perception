@@ -76,6 +76,10 @@ def get_cli_args():
                         action='store',
                         help='The FPS rate of the movie to write.',
                         default=10.)
+    parser.add_argument('--verbose',
+                        type=bool,
+                        default=False,
+                        help='Turn on detailed output')
     return parser.parse_args()
 
 def validate_cli_args(args):

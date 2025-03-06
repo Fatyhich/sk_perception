@@ -12,7 +12,7 @@ This file contains all utilities for plotting data.
 
 import numpy as np
 from matplotlib import pyplot as plt
-
+from scipy.linalg import cholesky
 
 
 def plot2dcov(mu, Sigma, color, nSigma=1, legend=None):

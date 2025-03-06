@@ -67,7 +67,8 @@ def main():
         slam_type='graphSlam',
         data_association='known',
         update_type='batch',
-        Q=np.diag([beta[0]**2, beta[1]**2])
+        Q=np.diag([beta[0]**2, beta[1]**2]),
+        verbose=args.verbose
     )
     
     should_show_plots = True if args.animate else False
@@ -95,7 +96,7 @@ def main():
 
             slam_solver.manual_solve()
             slam_solver.solve_normal_equation()
-            
+
             if not should_update_plots:
                 continue
 
